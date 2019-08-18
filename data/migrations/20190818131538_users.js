@@ -15,7 +15,7 @@ exports.up = function(knex) {
       .boolean('verified')
       .defaultTo(false)
       .notNullable();
-    users.decimal('score', 3, 2);
+    users.string('score', 3).defaultTo('4.00');
     users.timestamp('created_at').defaultTo(knex.fn.now());
   });
 };
