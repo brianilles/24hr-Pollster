@@ -48,4 +48,36 @@ router.post('/register', async (req, res) => {
   }
 });
 
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await Users.findByWithPass({ email });
+
+    // check that the passwords match
+    if (user && bcrypt.compareSync(password, user.password)) {
+      const token = generateToken(user);
+      res.status(200).json({ token });
+    } else {
+      res.status(401).json({ message: 'Invalid credentials.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'An unknown error occured. User could not be logged in.'
+    });
+  }
+});
+
+function generateToken(user) {
+  const payload = {
+    subject: user.id,
+    roles: [`${user.id}`]
+  };
+  const options = {
+    expiresIn: '120d'
+  };
+  return jwt.sign(payload, secret, options);
+}
+
 module.exports = router;

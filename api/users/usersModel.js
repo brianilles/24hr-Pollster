@@ -2,7 +2,8 @@ const db = require('../../data/dbConfig.js');
 
 module.exports = {
   add,
-  findBy
+  findBy,
+  findByWithPass
 };
 
 function add(user) {
@@ -20,6 +21,13 @@ function findBy(filter) {
       'score',
       'created_at'
     )
+    .where(filter)
+    .first();
+}
+
+function findByWithPass(filter) {
+  return db('users')
+    .select('id', 'password')
     .where(filter)
     .first();
 }
