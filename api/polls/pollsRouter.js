@@ -23,7 +23,7 @@ router.post('/:id', async (req, res) => {
       // add to polls table
       const added = await Polls.add(poll);
       const addedId = added[0];
-      let addedPost = await Polls.findBy({ id: addedId });
+      let addedPoll = await Polls.findBy({ id: addedId });
 
       // add to options table
       for (i in options) {
@@ -31,8 +31,8 @@ router.post('/:id', async (req, res) => {
       }
       const addedOptions = await Options.findByPollId(addedId);
 
-      addedPost.options = addedOptions;
-      res.status(201).json(addedPost);
+      addedPoll.options = addedOptions;
+      res.status(201).json(addedPoll);
     } catch (error) {
       res.status(500).json({
         message: 'An unknown error occured. Post could not be added.'
@@ -44,7 +44,22 @@ router.post('/:id', async (req, res) => {
 });
 
 // Gets a poll
-// router.get('/:id', (req, res) => {});
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    let poll = await Polls.findBy({ id });
+    if (poll) {
+      const options = await Options.findByPollId(id);
+      poll.options = options;
+      res.status(201).json(poll);
+    } else {
+      res.status(404).json({ message: 'That poll does not exist.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred getting the user.' });
+  }
+});
 
 // Deletes a poll
 // router.delete('/:id', (req, res) => {});
