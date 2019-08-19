@@ -3,7 +3,9 @@ const db = require('../../data/dbConfig.js');
 module.exports = {
   add,
   findBy,
-  remove
+  remove,
+  updateUp,
+  updateDown
 };
 
 function findBy(filter) {
@@ -30,4 +32,16 @@ function remove(filter) {
   return db('polls')
     .where(filter)
     .del();
+}
+
+function updateUp(pollData) {
+  return db('polls')
+    .where({ id: pollData.id })
+    .update({ up_votes: pollData.up_votes });
+}
+
+function updateDown(pollData) {
+  return db('polls')
+    .where({ id: pollData.id })
+    .update({ down_votes: pollData.down_votes });
 }

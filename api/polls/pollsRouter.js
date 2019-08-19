@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Users = require('../users/usersModel.js');
 const Polls = require('./pollsModel.js');
+const Votes = require('./votesModel.js');
 const Options = require('./options/optionsModel.js');
 
 // Creates a poll
@@ -81,6 +82,85 @@ router.delete('/:id', async (req, res) => {
     res.status(403).json({ message: 'No Access. Invalid token.' });
   }
 });
+
+// delete votes on poll
+
+//TODO - check for prepolling_active
+// Adds an upvote to a pre poll
+router.post('/prevote/upvote/:id', async (req, res) => {
+  const { id } = req.params;
+  const { pollId } = req.body;
+
+  const authorized = withRole(id, req, res);
+  if (authorized) {
+    const hasVoted = await Votes.findBy({
+      user_id: id,
+      poll_id: pollId
+    });
+    if (hasVoted) {
+      res
+        .status(405)
+        .json({ message: 'User has already voted for this pre poll.' });
+    } else {
+      const poll = await Polls.findBy({ id: pollId });
+      if (poll) {
+        let poll_up = poll.up_votes + 1;
+        const updatedPoll = await Polls.updateUp({
+          id: pollId,
+          up_votes: poll_up
+        });
+        await Votes.add({
+          user_id: id,
+          poll_id: pollId
+        });
+        res.status(200).json(updatedPoll);
+      } else {
+        res.status(404).json({ message: 'Poll not found.' });
+      }
+    }
+  } else {
+    res.status(403).json({ message: 'No Access. Invalid token.' });
+  }
+});
+
+// Adds an downvote to a pre poll
+router.post('/prevote/downvote/:id', async (req, res) => {
+  const { id } = req.params;
+  const { pollId } = req.body;
+
+  const authorized = withRole(id, req, res);
+  if (authorized) {
+    const hasVoted = await Votes.findBy({
+      user_id: id,
+      poll_id: pollId
+    });
+    if (hasVoted) {
+      res
+        .status(405)
+        .json({ message: 'User has already voted for this pre poll.' });
+    } else {
+      const poll = await Polls.findBy({ id: pollId });
+      if (poll) {
+        let poll_down = poll.down_votes + 1;
+        const updatedPoll = await Polls.updateDown({
+          id: pollId,
+          down_votes: poll_down
+        });
+        await Votes.add({
+          user_id: id,
+          poll_id: pollId
+        });
+        res.status(200).json(updatedPoll);
+      } else {
+        res.status(404).json({ message: 'Poll not found.' });
+      }
+    }
+  } else {
+    res.status(403).json({ message: 'No Access. Invalid token.' });
+  }
+});
+
+// Adds a vote to a poll
 
 function withRole(id, req, res) {
   if (
