@@ -3,7 +3,8 @@ const db = require('../../data/dbConfig.js');
 module.exports = {
   add,
   findBy,
-  findByWithPass
+  findByWithPass,
+  remove
 };
 
 function add(user) {
@@ -30,4 +31,10 @@ function findByWithPass(filter) {
     .select('id', 'password')
     .where(filter)
     .first();
+}
+
+function remove(filter) {
+  return db('users')
+    .where(filter)
+    .del();
 }

@@ -5,6 +5,7 @@ const secret = require('./secret').jwtSecret;
 
 const Users = require('../usersModel.js');
 
+// Create a user
 // TODO: add check for valid phone
 router.post('/register', async (req, res) => {
   // user info passed in request body
@@ -48,6 +49,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// Logs in a user
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
