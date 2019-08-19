@@ -5,6 +5,7 @@ const cors = require('cors');
 // import routes
 const authRouter = require('./users/auth/authRouter.js');
 const usersRouter = require('./users/usersRouter.js');
+const pollsRouter = require('./polls/pollsRouter.js');
 
 // restricted middleware
 const restricted = require('./users/auth/restrictedMiddleware.js');
@@ -27,5 +28,8 @@ server.use('/api/auth', authRouter);
 
 // user routes
 server.use('/api/users', restricted, usersRouter);
+
+// polls routes
+server.use('/api/polls', restricted, pollsRouter);
 
 module.exports = server;
