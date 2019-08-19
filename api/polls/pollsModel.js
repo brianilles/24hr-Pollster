@@ -2,7 +2,8 @@ const db = require('../../data/dbConfig.js');
 
 module.exports = {
   add,
-  findBy
+  findBy,
+  remove
 };
 
 function findBy(filter) {
@@ -23,4 +24,10 @@ function findBy(filter) {
 
 function add(poll) {
   return db('polls').insert(poll);
+}
+
+function remove(filter) {
+  return db('polls')
+    .where(filter)
+    .del();
 }

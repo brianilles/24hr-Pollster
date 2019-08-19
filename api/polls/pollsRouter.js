@@ -62,7 +62,25 @@ router.get('/:id', async (req, res) => {
 });
 
 // Deletes a poll
-// router.delete('/:id', (req, res) => {});
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { pollId } = req.body;
+
+  const authorized = withRole(id, req, res);
+  if (authorized) {
+    const poll = await Polls.remove({ id: pollId });
+    const options = await Options.remove({ poll_id: pollId });
+    if (poll) {
+      res.status(204).end();
+    } else {
+      res.status(500).json({
+        message: 'An error occured. The poll was likely recently deleted.'
+      });
+    }
+  } else {
+    res.status(403).json({ message: 'No Access. Invalid token.' });
+  }
+});
 
 function withRole(id, req, res) {
   if (

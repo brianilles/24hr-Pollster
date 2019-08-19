@@ -3,7 +3,8 @@ const db = require('../../../data/dbConfig.js');
 module.exports = {
   add,
   findBy,
-  findByPollId
+  findByPollId,
+  remove
 };
 
 function findBy(filter) {
@@ -21,4 +22,10 @@ function findByPollId(poll_id) {
 
 function add(option) {
   return db('options').insert(option);
+}
+
+function remove(filter) {
+  return db('options')
+    .where(filter)
+    .del();
 }

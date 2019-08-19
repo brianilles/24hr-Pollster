@@ -44,7 +44,7 @@ router.delete('/:id', async (req, res) => {
       res.status(204).end();
     } else {
       res.status(500).json({
-        message: 'An error occured. The user was likely deleted.'
+        message: 'An error occured. The user was likely recently deleted.'
       });
     }
   } else {
