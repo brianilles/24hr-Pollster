@@ -5,7 +5,8 @@ module.exports = {
   findBy,
   remove,
   updateUp,
-  updateDown
+  updateDown,
+  update
 };
 
 function findBy(filter) {
@@ -44,4 +45,10 @@ function updateDown(pollData) {
   return db('polls')
     .where({ id: pollData.id })
     .update({ down_votes: pollData.down_votes });
+}
+
+function update(id) {
+  return db('polls')
+    .where({ id })
+    .update({ prepolling_active: false });
 }

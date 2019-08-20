@@ -17,8 +17,7 @@ Base URL: `example.com`
 | GET         | `/polls/:id`                  | Gets a poll               | TRUE      |
 | POST        | `/polls/prevote/upvote/:id`   | Adds a vote to a pre poll | TRUE      |
 | POST        | `/polls/prevote/downvote/:id` | Adds a vote to a pre poll | TRUE      |
-
-| POST | `/polls/vote/:id` | Adds a vote to a poll| TRUE |
+| POST        | `/polls/vote/:id`             | Adds a vote to a poll     | TRUE      |
 
 | GET | `/polls/pre/feed` | Gets prepoll feed | TRUE |
 | GET | `/polls/feed` | Gets user's poll feed | TRUE |

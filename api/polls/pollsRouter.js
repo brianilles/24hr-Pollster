@@ -1,3 +1,4 @@
+const moment = require('moment');
 const router = require('express').Router();
 const Users = require('../users/usersModel.js');
 const Polls = require('./pollsModel.js');
@@ -104,16 +105,23 @@ router.post('/prevote/upvote/:id', async (req, res) => {
     } else {
       const poll = await Polls.findBy({ id: pollId });
       if (poll) {
-        let poll_up = poll.up_votes + 1;
-        const updatedPoll = await Polls.updateUp({
-          id: pollId,
-          up_votes: poll_up
-        });
-        await Votes.add({
-          user_id: id,
-          poll_id: pollId
-        });
-        res.status(200).json(updatedPoll);
+        // check for poll duration
+        const active = isActiveDay(poll.created_at);
+        if (!active) {
+          await Polls.update(pollId);
+          res.status(400).json({ message: 'Pre polling is no longer active.' });
+        } else {
+          let poll_up = poll.up_votes + 1;
+          const updatedPoll = await Polls.updateUp({
+            id: pollId,
+            up_votes: poll_up
+          });
+          await Votes.add({
+            user_id: id,
+            poll_id: pollId
+          });
+          res.status(200).json(updatedPoll);
+        }
       } else {
         res.status(404).json({ message: 'Poll not found.' });
       }
@@ -122,6 +130,20 @@ router.post('/prevote/upvote/:id', async (req, res) => {
     res.status(403).json({ message: 'No Access. Invalid token.' });
   }
 });
+
+function isActiveDay(created_at) {
+  let created = moment(created_at);
+  let now = moment();
+
+  // 86400 seconds in a day
+  let dayInSeconds = 86400;
+  let secondsAgo = created.diff(now, 'seconds');
+  if (dayInSeconds - secondsAgo >= 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 // Adds an downvote to a pre poll
 router.post('/prevote/downvote/:id', async (req, res) => {
