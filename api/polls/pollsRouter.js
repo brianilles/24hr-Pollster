@@ -163,16 +163,22 @@ router.post('/prevote/downvote/:id', async (req, res) => {
     } else {
       const poll = await Polls.findBy({ id: pollId });
       if (poll) {
-        let poll_down = poll.down_votes + 1;
-        const updatedPoll = await Polls.updateDown({
-          id: pollId,
-          down_votes: poll_down
-        });
-        await Votes.add({
-          user_id: id,
-          poll_id: pollId
-        });
-        res.status(200).json(updatedPoll);
+        const active = isActiveDay(poll.created_at);
+        if (!active) {
+          await Polls.update(pollId);
+          res.status(400).json({ message: 'Pre polling is no longer active.' });
+        } else {
+          let poll_down = poll.down_votes + 1;
+          const updatedPoll = await Polls.updateDown({
+            id: pollId,
+            down_votes: poll_down
+          });
+          await Votes.add({
+            user_id: id,
+            poll_id: pollId
+          });
+          res.status(200).json(updatedPoll);
+        }
       } else {
         res.status(404).json({ message: 'Poll not found.' });
       }
