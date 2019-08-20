@@ -19,7 +19,7 @@ router.post('/:id', async (req, res) => {
       question
     };
 
-    // create the post
+    // create the poll
     try {
       // add to polls table
       const added = await Polls.add(poll);
@@ -161,6 +161,51 @@ router.post('/prevote/downvote/:id', async (req, res) => {
 });
 
 // Adds a vote to a poll
+router.post('/vote/:id', async (req, res) => {
+  const { id } = req.params;
+  const { pollId, optionId } = req.body;
+
+  // 1. check that the poll exists
+  // 2. increment the value of the optionId
+
+  const authorized = withRole(id, req, res);
+  if (authorized) {
+    const hasVotedForPoll = await Votes.pollFindBy({
+      user_id: id,
+      poll_id: pollId
+    });
+    if (hasVotedForPoll) {
+      res
+        .status(405)
+        .json({ message: 'User has already voted for this poll.' });
+    } else {
+      const option = await Options.findBy({ id: optionId });
+
+      // check that the option exists on the poll
+      if (option && option.poll_id === pollId) {
+        // add votes to option
+        const upOption = option.votes + 1;
+        const updatedOption = await Options.updateUp({
+          id: optionId,
+          votes: upOption
+        });
+        if (updatedOption) {
+          await Votes.addVotes({
+            user_id: id,
+            poll_id: pollId
+          });
+          res.status(200).json(updatedOption);
+        } else {
+          res.status(404).json({ message: 'Option not found.' });
+        }
+      } else {
+        res.status(404).json({ message: 'Poll/Option not found.' });
+      }
+    }
+  } else {
+    res.status(403).json({ message: 'No Access. Invalid token.' });
+  }
+});
 
 function withRole(id, req, res) {
   if (
