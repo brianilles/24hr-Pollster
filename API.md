@@ -8,10 +8,10 @@
 | POST        | `/api/auth/login`    | Logs in a user     | FALSE               | FALSE             |
 | GET         | `/api/users/:id`     | Gets a user's info | TRUE                | TRUE              |
 | DELETE      | `/users/:id`         | Deletes a user     | TRUE                | TRUE              |
+| POST        | `/polls/:id`         | Creates a poll     | TRUE                | TRUE              |
+| GET         | `/polls/:id`         | Gets a poll        | TRUE                | FALSE             |
+| DELETE      | `/polls/:id`         | Deletes a poll     | TRUE                | TRUE              |
 
-| POST | `/polls/:id` | Creates a poll | TRUE | |
-| DELETE | `/polls/:id` | Deletes a poll | TRUE | |
-| GET | `/polls/:id` | Gets a poll | TRUE | |
 | POST | `/polls/prevote/upvote/:id` | Adds a vote to a pre poll | TRUE | |
 | POST | `/polls/prevote/downvote/:id` | Adds a vote to a pre poll | TRUE | |
 | POST | `/polls/vote/:id` | Adds a vote to a poll | TRUE | |
@@ -27,8 +27,8 @@ Send in request body:
 ```json
 {
   "full_name": "Test Name",
-  "email": "example@gmail.com",
-  "phone_number": "29012901828",
+  "email": "exam4p3d3ass3ddfle@gmail.com",
+  "phone_number": "2940s403d5d12901828",
   "password": "passwordjfklsd;a"
 }
 ```
@@ -37,13 +37,13 @@ Response:
 
 ```json
 {
-  "id": 1,
+  "id": 13,
   "full_name": "Test Name",
-  "email": "example@gmail.com",
-  "phone_number": "29012901828",
+  "email": "exam4p3d3ass3ddfle@gmail.com",
+  "phone_number": "2940s403d5d12901828",
   "verified_status": "unverified",
   "score": "4.00",
-  "created_at": "2019-08-21 00:42:15"
+  "created_at": "2019-08-21 05:02:52"
 }
 ```
 
@@ -55,7 +55,7 @@ Send in request body:
 
 ```json
 {
-  "email": "examp3le@gmail.com",
+  "email": "exam4p3d3ass3ddfle@gmail.com",
   "password": "passwordjfklsd;a"
 }
 ```
@@ -64,8 +64,8 @@ Response:
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoyLCJyb2xlcyI6WyIyIl0sImlhdCI6MTU2NjM1MDI4MywiZXhwIjoxNTc2NzE4MjgzfQ.mJXEd6lSUGvIdqQKHONVBZ9zx0NmnI_wHQzJxO_mQA4",
-  "id": 2
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoxMywicm9sZXMiOlsiMTMiXSwiaWF0IjoxNTY2MzY0Nzg4LCJleHAiOjE1NzY3MzI3ODh9.47zGtZehy9BNjN1bLeaVoLRyIQ4w0aWfqJvZeB_A2Lc",
+  "id": 13
 }
 ```
 
@@ -79,13 +79,13 @@ Response:
 
 ```json
 {
-  "id": 3,
+  "id": 10,
   "full_name": "Test Name",
-  "email": "exampd3le@gmail.com",
-  "phone_number": "2900d12901828",
+  "email": "exam4p3d3asdfle@gmail.com",
+  "phone_number": "2940405d12901828",
   "verified_status": "unverified",
   "score": "4.00",
-  "created_at": "2019-08-21 01:38:37"
+  "created_at": "2019-08-21 04:15:42"
 }
 ```
 
@@ -107,8 +107,8 @@ Send in request body:
 
 ```json
 {
-  "question": "does this work?",
-  "options": ["yes", "no", "maybe", "so"]
+  "text": "does this work",
+  "options": ["yes", "no"]
 }
 ```
 
@@ -116,37 +116,25 @@ Response:
 
 ```json
 {
-  "id": 108,
-  "question": "does this work?",
+  "id": 23,
+  "text": "does this work",
   "up_votes": 0,
   "down_votes": 0,
-  "polling_active": 0,
-  "prepolling_active": 1,
-  "completed": 0,
-  "created_at": "2019-08-20 22:22:16",
+  "proposed_polling_status": "active",
+  "polling_status": "inactive",
+  "poll_status": "inactive",
+  "created_at": "2019-08-21 05:18:47",
   "options": [
     {
-      "id": 179,
-      "poll_id": 108,
+      "id": 77,
+      "poll_id": 23,
       "text": "yes",
       "votes": 0
     },
     {
-      "id": 180,
-      "poll_id": 108,
+      "id": 78,
+      "poll_id": 23,
       "text": "no",
-      "votes": 0
-    },
-    {
-      "id": 181,
-      "poll_id": 108,
-      "text": "maybe",
-      "votes": 0
-    },
-    {
-      "id": 182,
-      "poll_id": 108,
-      "text": "so",
       "votes": 0
     }
   ]
@@ -156,6 +144,8 @@ Response:
 ---
 
 #### GET `/api/polls/:id`
+
+id is poll_id
 
 Authorization header: user token
 

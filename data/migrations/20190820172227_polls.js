@@ -4,10 +4,9 @@ exports.up = function(knex) {
     polls
       .integer('user_id')
       .unsigned()
-      .notNullable()
       .references('users.id')
-      .onDelete('CASCADE')
-      .onUpdate('CASCADE');
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
     polls.string('text').notNullable();
     polls.integer('up_votes').defaultTo(0);
     polls.integer('down_votes').defaultTo(0);
