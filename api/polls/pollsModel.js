@@ -7,7 +7,8 @@ module.exports = {
   updateUp,
   updateDown,
   update,
-  updatePolling,
+  updatePollPassed,
+  updatePollFailed,
   findByPollId
 };
 
@@ -58,10 +59,20 @@ function update(id) {
     .update({ prepolling_active: false });
 }
 
-function updatePolling(id) {
+// the proposed poll has passed
+function updatePollPassed(id) {
   return db('polls')
     .where({ id })
-    .update({ polling_active: false, completed: false });
+    .update({ proposed_polling_status: 'complete', polling_status: 'active' });
+}
+
+function updatePollFailed(id) {
+  return db('polls')
+    .where({ id })
+    .update({
+      proposed_polling_status: 'complete',
+      polling_status: 'complete'
+    });
 }
 
 // returns the creator of the poll

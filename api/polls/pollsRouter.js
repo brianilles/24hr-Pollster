@@ -8,6 +8,7 @@ const Options = require('./options/optionsModel.js');
 
 // service imports
 const AuthService = require('../users/auth/authServices.js');
+const VotesService = require('./votesServices.js');
 
 // creates a poll
 router.post('/:id', async (req, res) => {
@@ -149,66 +150,74 @@ router.delete('/:id', async (req, res) => {
 });
 
 // adds an upvote to a pre poll
-router.post('/prevote/upvote/:id', async (req, res) => {
+router.post('/proposedvote/upvote/:id', async (req, res) => {
+  // gets id from request params
   const { id } = req.params;
   const { pollId } = req.body;
 
-  const authorized = withRole(id, req, res);
-  if (authorized) {
-    const hasVoted = await Votes.findBy({
-      user_id: id,
-      poll_id: pollId
-    });
-    if (hasVoted) {
-      res
-        .status(405)
-        .json({ message: 'User has already voted for this pre poll.' });
-    } else {
-      const poll = await Polls.findBy({ id: pollId });
+  try {
+    // check if jwt roles match
+    const authorized = await AuthService.withRole(id, req, res);
+
+    if (authorized) {
+      // get the poll
+      const poll = await Polls.findBy({
+        id: pollId
+      });
+
       if (poll) {
-        // check for poll duration
-        const active = isActiveDay(poll.created_at);
-        if (!active) {
-          await Polls.update(pollId);
-          res.status(400).json({ message: 'Pre polling is no longer active.' });
-        } else {
-          let poll_up = poll.up_votes + 1;
-          const updatedPoll = await Polls.updateUp({
-            id: pollId,
-            up_votes: poll_up
-          });
-          await Votes.add({
+        // check that this proposed poll is still active
+        const proposedPollStatus = await VotesService.getProposedPollStatus(
+          poll
+        );
+
+        // if true meaning the poll is still active (hasn't been an hour yet)
+        if (proposedPollStatus) {
+          // check if the user has voted for this poll yet, no double votes allowed
+          const hasVoted = await Votes.findBy({
             user_id: id,
             poll_id: pollId
           });
-          res.status(200).json(updatedPoll);
+
+          // if user has already voted
+          if (hasVoted) {
+            res.status(405).json({
+              message: 'User has already voted for this pre poll.'
+            });
+          } else {
+            // update the poll by +1
+            let poll_up = poll.up_votes + 1;
+            const updatedPoll = await Polls.updateUp({
+              id: pollId,
+              up_votes: poll_up
+            });
+
+            // record the user has voted for this poll
+            await Votes.add({
+              user_id: id,
+              poll_id: pollId
+            });
+
+            // respond with the updated poll
+            res.status(200).json(updatedPoll);
+          }
+        } else {
+          res.status(400).json({
+            message: 'Polling has ended.'
+          });
         }
       } else {
-        res.status(404).json({ message: 'Poll not found.' });
+        res.status(404).json({
+          message: 'Poll not found.'
+        });
       }
+    } else {
+      res.status(403).json({ message: 'No Access. Invalid token.' });
     }
-  } else {
-    res.status(403).json({ message: 'No Access. Invalid token.' });
+  } catch (error) {
+    res.status(500).json({ message: 'An unknown error occured.' });
   }
 });
-
-// has a day gone by since this poll was created?
-function isActiveDay(created_at) {
-  let created = moment(created_at);
-  let now = moment().utc();
-  console.log(created);
-  console.log(now);
-
-  // 86400 seconds in a day
-  let dayInSeconds = 400;
-  let secondsAgo = created.diff(now, 'seconds');
-  console.log(secondsAgo);
-  if (dayInSeconds + secondsAgo >= 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 // adds an downvote to a pre poll
 router.post('/prevote/downvote/:id', async (req, res) => {
@@ -252,22 +261,6 @@ router.post('/prevote/downvote/:id', async (req, res) => {
     res.status(403).json({ message: 'No Access. Invalid token.' });
   }
 });
-
-// has a day gone by since this poll was created?
-function isActiveHour(created_at) {
-  let created = moment(created_at);
-  let now = moment();
-
-  // 3600 seconds in an hour
-  let hourInSeconds = 10;
-  let secondsAgo = created.diff(now, 'seconds');
-  console.log(secondsAgo);
-  if (hourInSeconds - secondsAgo >= 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 // adds a vote to a poll
 router.post('/vote/:id', async (req, res) => {

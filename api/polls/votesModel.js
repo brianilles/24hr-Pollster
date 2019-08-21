@@ -8,23 +8,23 @@ module.exports = {
 };
 
 function findBy(filter) {
-  return db('userPrePollVotes')
+  return db('users_proposed_polls_votes')
     .select()
     .where(filter)
     .first();
 }
 
 function add(ids) {
-  return db('userPrePollVotes').insert(ids);
+  return db('users_proposed_polls_votes').insert(ids);
 }
 
 function pollFindBy(filter) {
-  return db('userPollVotes')
+  return db('users_polls_votes')
     .select()
     .where(filter)
     .first();
 }
 
 function addVotes(ids) {
-  return db('userPollVotes').insert(ids);
+  return db('users_polls_votes').insert(ids);
 }
