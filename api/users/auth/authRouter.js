@@ -1,11 +1,13 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const secret = require('./secret').jwtSecret;
 
+// model imports
 const Users = require('../usersModel.js');
 
-// Create a user
+// service imports
+const AuthService = require('./authServices.js');
+
+// create a user
 router.post('/register', async (req, res) => {
   // user info passed in request body
   let user = req.body;
@@ -58,19 +60,37 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Logs in a user
+// logs in a user
 router.post('/login', async (req, res) => {
+  // user info passed in request body
   const { email, password } = req.body;
 
   try {
-    const user = await Users.findByWithPass({ email });
+    // checks that the user exists, gets the id and password from DB
+    const user = await Users.findByMin({
+      email
+    });
+
+    // if the user's email is not found in db
+    if (!user) {
+      res.status(404).json({ message: 'User with that email not found.' });
+      return;
+    }
 
     // check that the passwords match
     if (user && bcrypt.compareSync(password, user.password)) {
-      const token = generateToken(user);
-      res.status(200).json({ token, id: user.id });
+      // generate a token unique to that user
+      const token = AuthService.generateToken(user);
+
+      // respond with the token and the user id
+      res.status(200).json({
+        token,
+        id: user.id
+      });
     } else {
-      res.status(401).json({ message: 'Invalid credentials.' });
+      res.status(401).json({
+        message: 'Invalid credentials.'
+      });
     }
   } catch (error) {
     console.error(error);
@@ -79,16 +99,5 @@ router.post('/login', async (req, res) => {
     });
   }
 });
-
-function generateToken(user) {
-  const payload = {
-    subject: user.id,
-    roles: [`${user.id}`]
-  };
-  const options = {
-    expiresIn: '120d'
-  };
-  return jwt.sign(payload, secret, options);
-}
 
 module.exports = router;

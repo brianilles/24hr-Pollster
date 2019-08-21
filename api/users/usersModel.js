@@ -3,7 +3,7 @@ const db = require('../../data/dbConfig.js');
 module.exports = {
   add,
   findBy,
-  findByWithPass,
+  findByMin,
   remove
 };
 
@@ -11,7 +11,7 @@ function add(user) {
   return db('users').insert(user);
 }
 
-// finds and returns a user's info, omit password
+// finds and returns a user's info, (password omitted)
 function findBy(filter) {
   return db('users')
     .select(
@@ -27,7 +27,7 @@ function findBy(filter) {
     .first();
 }
 
-function findByWithPass(filter) {
+function findByMin(filter) {
   return db('users')
     .select('id', 'password')
     .where(filter)
