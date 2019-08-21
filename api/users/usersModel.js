@@ -11,6 +11,7 @@ function add(user) {
   return db('users').insert(user);
 }
 
+// finds and returns a user's info, omit password
 function findBy(filter) {
   return db('users')
     .select(
@@ -18,7 +19,7 @@ function findBy(filter) {
       'full_name',
       'email',
       'phone_number',
-      'verified',
+      'verified_status',
       'score',
       'created_at'
     )

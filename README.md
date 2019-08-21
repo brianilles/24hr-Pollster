@@ -8,7 +8,7 @@ Base URL: `example.com`
 
 | HTTP METHOD | Endpoint                      | Description               | Needs Auth header |
 | ----------- | ----------------------------- | ------------------------- | ----------------- |
-| POST        | `/users/register`             | Creates a user            | FALSE             |
+| POST        | `/auth/register`              | Creates a user            | FALSE             |
 | POST        | `/users/login`                | Logs in a user            | FALSE             |
 | GET         | `/users/:id`                  | Gets a user's info        | TRUE              |
 | DELETE      | `/users/:id`                  | Deletes a user            | TRUE              |
@@ -21,7 +21,7 @@ Base URL: `example.com`
 
 ---
 
-#### POST `/api/users/register`
+#### POST `/api/auth/register`
 
 Send in request body:
 
@@ -38,13 +38,13 @@ Response:
 
 ```json
 {
-  "id": 8,
+  "id": 1,
   "full_name": "Test Name",
   "email": "example@gmail.com",
   "phone_number": "29012901828",
-  "verified": 0,
+  "verified_status": "unverified",
   "score": "4.00",
-  "created_at": "2019-08-20 22:18:47"
+  "created_at": "2019-08-21 00:42:15"
 }
 ```
 

@@ -6,7 +6,6 @@ const secret = require('./secret').jwtSecret;
 const Users = require('../usersModel.js');
 
 // Create a user
-// TODO: add check for valid phone
 router.post('/register', async (req, res) => {
   // user info passed in request body
   let user = req.body;
@@ -17,35 +16,45 @@ router.post('/register', async (req, res) => {
     res.status(422).json({
       message: 'Must provide full_name, email, phone_number, and password.'
     });
+    return;
   }
 
-  // check if the email and phone are already present on the DB
-  const emailCheck = await Users.findBy({ email });
-  const phoneNumberCheck = await Users.findBy({ phone_number });
+  try {
+    // check if the email and phone are already present in the DB
+    const emailCheck = await Users.findBy({ email });
+    const phoneNumberCheck = await Users.findBy({ phone_number });
 
-  if (emailCheck && phoneNumberCheck) {
-    res
-      .status(405)
-      .json({ message: 'Email and phone number are already taken.' });
-  } else if (emailCheck) {
-    res.status(405).json({ message: 'Email already taken.' });
-  } else if (phoneNumberCheck) {
-    res.status(405).json({ message: 'Phone number already taken.' });
-  } else {
-    // correct usage
-    const hash = bcrypt.hashSync(user.password, 12);
-    user.password = hash;
+    if (emailCheck && phoneNumberCheck) {
+      res
+        .status(405)
+        .json({ message: 'Email and phone number are already taken.' });
+    } else if (emailCheck) {
+      res.status(405).json({ message: 'Email already taken.' });
+    } else if (phoneNumberCheck) {
+      res.status(405).json({ message: 'Phone number already taken.' });
+    } else {
+      // correct usage
 
-    try {
+      // create hash of password to store in db
+      const hash = bcrypt.hashSync(user.password, 12);
+
+      // rewrite the password on user object with the hash
+      user.password = hash;
+
+      // add user to DB
       await Users.add(user);
+
+      // get user object (password omitted)
       const addedUser = await Users.findBy({ email });
+
+      // respond with added user object
       res.status(201).json(addedUser);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: 'An unknown error occured. User could not be added.'
-      });
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'An unknown error occured.'
+    });
   }
 });
 
