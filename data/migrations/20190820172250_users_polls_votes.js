@@ -1,14 +1,14 @@
 exports.up = function(knex) {
-  return knex.schema.createTable('userPollVotes', userPollVotes => {
-    userPollVotes.increments();
-    userPollVotes
+  return knex.schema.createTable('users_polls_votes', users_polls_votes => {
+    users_polls_votes.increments();
+    users_polls_votes
       .integer('user_id')
       .unsigned()
       .notNullable()
       .references('users.id')
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
-    userPollVotes
+    users_polls_votes
       .integer('poll_id')
       .unsigned()
       .notNullable()
@@ -19,5 +19,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('userPollVotes');
+  return knex.schema.dropTableIfExists('users_polls_votes');
 };

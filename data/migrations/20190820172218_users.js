@@ -12,14 +12,19 @@ exports.up = function(knex) {
       .unique();
     users.string('password', 128).notNullable();
     users
-      .boolean('verified')
-      .defaultTo(false)
+      .string('verified_status')
+      .defaultTo('unverified')
       .notNullable();
-    users.string('score', 3).defaultTo('4.00');
-    users.timestamp('created_at').defaultTo(knex.fn.now());
+    users.string('score').defaultTo('4.00');
+    //     users.timestamp('created_at').defaultTo(knex.fn.now());
+    users
+      .timestamp('created_at', {
+        useTz: false
+      })
+      .defaultTo(knex.fn.now());
   });
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('users');
+  return knex.schema.dropTableIfExists('users');
 };

@@ -8,16 +8,20 @@ exports.up = function(knex) {
       .references('users.id')
       .onDelete('CASCADE')
       .onUpdate('CASCADE');
-    polls.string('question', 128).notNullable();
+    polls.string('text').notNullable();
     polls.integer('up_votes').defaultTo(0);
     polls.integer('down_votes').defaultTo(0);
-    polls.boolean('polling_active').defaultTo(false);
-    polls.boolean('prepolling_active').defaultTo(true);
-    polls.boolean('completed').defaultTo(false);
-    polls.timestamp('created_at').defaultTo(knex.fn.now());
+    polls.string('proposed_polling_status').defaultTo('active');
+    polls.string('polling_status').defaultTo('inactive');
+    polls.string('poll_status').defaultTo('inactive');
+    polls
+      .timestamp('created_at', {
+        useTz: false
+      })
+      .defaultTo(knex.fn.now());
   });
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('polls');
+  return knex.schema.dropTableIfExists('polls');
 };
