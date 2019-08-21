@@ -2,18 +2,18 @@
 
 ## Endpoint table
 
-| HTTP METHOD | Endpoint                         | Description               | Needs AUTH-Z Header | Needs AUTH-N Role |
-| ----------- | -------------------------------- | ------------------------- | ------------------- | ----------------- |
-| POST        | `/api/auth/register`             | Creates a user            | FALSE               | FALSE             |
-| POST        | `/api/auth/login`                | Logs in a user            | FALSE               | FALSE             |
-| GET         | `/api/users/:id`                 | Gets a user's info        | TRUE                | TRUE              |
-| DELETE      | `/users/:id`                     | Deletes a user            | TRUE                | TRUE              |
-| POST        | `/polls/:id`                     | Creates a poll            | TRUE                | TRUE              |
-| GET         | `/polls/:id`                     | Gets a poll               | TRUE                | FALSE             |
-| DELETE      | `/polls/:id`                     | Deletes a poll            | TRUE                | TRUE              |
-| POST        | `/polls/proposedvote/upvote/:id` | Adds a vote to a pre poll | TRUE                | TRUE              |
+| HTTP METHOD | Endpoint                              | Description                   | Needs AUTH-Z Header | Needs AUTH-N Role |
+| ----------- | ------------------------------------- | ----------------------------- | ------------------- | ----------------- |
+| POST        | `/api/auth/register`                  | Creates a user                | FALSE               | FALSE             |
+| POST        | `/api/auth/login`                     | Logs in a user                | FALSE               | FALSE             |
+| GET         | `/api/users/:id`                      | Gets a user's info            | TRUE                | TRUE              |
+| DELETE      | `/api/users/:id`                      | Deletes a user                | TRUE                | TRUE              |
+| POST        | `/api/polls/:id`                      | Creates a poll                | TRUE                | TRUE              |
+| GET         | `/api/polls/:id`                      | Gets a poll                   | TRUE                | FALSE             |
+| DELETE      | `/api/polls/:id`                      | Deletes a poll                | TRUE                | TRUE              |
+| POST        | `/api/polls/proposedvote/upvote/:id`  | Adds an upvote to a pre poll  | TRUE                | TRUE              |
+| POST        | `api/polls/proposedvote/downvote/:id` | Adds a downvote to a pre poll | TRUE                | TRUE              |
 
-| POST | `/polls/prevote/downvote/:id` | Adds a vote to a pre poll | TRUE | |
 | POST | `/polls/vote/:id` | Adds a vote to a poll | TRUE | |
 
 ## Endpoint Examples
@@ -223,71 +223,12 @@ Send in request body:
 Response:
 
 ```json
-{
-  "id": 108,
-  "question": "does this work?",
-  "up_votes": 0,
-  "down_votes": 0,
-  "polling_active": 0,
-  "prepolling_active": 1,
-  "completed": 0,
-  "created_at": "2019-08-20 22:22:16",
-  "options": [
-    {
-      "id": 179,
-      "poll_id": 108,
-      "text": "yes",
-      "votes": 0
-    },
-    {
-      "id": 180,
-      "poll_id": 108,
-      "text": "no",
-      "votes": 0
-    },
-    {
-      "id": 181,
-      "poll_id": 108,
-      "text": "maybe",
-      "votes": 0
-    },
-    {
-      "id": 182,
-      "poll_id": 108,
-      "text": "so",
-      "votes": 0
-    }
-  ]
-}
-```
-
----
-
-# bug here ... need role fix
-
-#### POST `/api/polls/prevote/upvote/:id`
-
-Authorization header: user token
-
-Send in request body:
-
-```json
-{
-  "pollId": 112
-}
-```
-
-Response:
-
-```json
 1
 ```
 
 ---
 
-# bug here ... need role fix
-
-#### POST `/api/polls/prevote/downvote/:id`
+#### POST `api/polls/proposedvote/downvote/:id`
 
 Authorization header: user token
 
