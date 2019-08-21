@@ -75,31 +75,65 @@ router.post('/:id', async (req, res) => {
 
 // gets a poll
 router.get('/:id', async (req, res) => {
+  // gets id from request params
   const { id } = req.params;
+
   try {
-    let poll = await Polls.findBy({ id });
+    // gets poll from db
+    let poll = await Polls.findBy({
+      id
+    });
+
+    // if poll exists in db
     if (poll) {
+      // get the options in the db for that post
       const options = await Options.findByPollId(id);
+
+      // add the options to the poll object
       poll.options = options;
+
+      // respond with poll object
       res.status(201).json(poll);
     } else {
-      res.status(404).json({ message: 'That poll does not exist.' });
+      res.status(404).json({
+        message: 'That poll does not exist.'
+      });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'An error occurred getting the user.' });
+    res.status(500).json({
+      message: 'An error occurred getting the user.'
+    });
   }
 });
 
 // deletes a poll
 router.delete('/:id', async (req, res) => {
+  // gets id from request params
   const { id } = req.params;
   const { pollId } = req.body;
 
-  const authorized = withRole(id, req, res);
-  if (authorized) {
-    const poll = await Polls.remove({ id: pollId });
-    const options = await Options.remove({ poll_id: pollId });
+  // check if jwt roles match
+  const authorized = await AuthService.withRole(id, req, res);
+
+  // check if the poll is owned by the user
+  const ownership = await AuthService.withPollOwnership(pollId, id, req, res);
+
+  // if authorized, meaning role on the JWT
+  if (authorized && ownership) {
+    //remove tha poll from the db
+    const poll = await Polls.remove({
+      id: pollId
+    });
+
+    // remove the options related to the poll from the db
+    const options = await Options.remove({
+      poll_id: pollId
+    });
+
+    // TODO: remove the proposed polls vote and polls votes
+
+    // if successfull deletion of poll return no content
     if (poll) {
       res.status(204).end();
     } else {
@@ -108,7 +142,9 @@ router.delete('/:id', async (req, res) => {
       });
     }
   } else {
-    res.status(403).json({ message: 'No Access. Invalid token.' });
+    res.status(403).json({
+      message: 'No Access. Invalid token.'
+    });
   }
 });
 

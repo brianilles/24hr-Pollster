@@ -3,10 +3,12 @@ const secret = require('./secret.js').jwtSecret;
 
 // models import
 const Users = require('../usersModel.js');
+const Polls = require('../../polls/pollsModel.js');
 
 module.exports = {
   generateToken,
-  withRole
+  withRole,
+  withPollOwnership
 };
 
 // creates a JWT with the user id on roles
@@ -23,8 +25,8 @@ function generateToken(user) {
 
 // check if jwt roles match
 async function withRole(id, req, res) {
-  // get user from db
   try {
+    // get user from db
     const user = await Users.findBy({ id });
     if (
       user &&
@@ -32,6 +34,22 @@ async function withRole(id, req, res) {
       req.decodedJwt.roles &&
       req.decodedJwt.roles.includes(id)
     ) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
+async function withPollOwnership(pollId, id, req, res) {
+  try {
+    // get the user's polls id
+    const pollUser = await Polls.findByPollId(pollId);
+
+    // if those the pollId is under their ownership, return true
+    if (pollUser.user_id == id) {
       return true;
     } else {
       return false;

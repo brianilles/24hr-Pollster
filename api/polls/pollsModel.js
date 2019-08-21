@@ -7,7 +7,8 @@ module.exports = {
   updateUp,
   updateDown,
   update,
-  updatePolling
+  updatePolling,
+  findByPollId
 };
 
 // finds poll without user id
@@ -56,8 +57,17 @@ function update(id) {
     .where({ id })
     .update({ prepolling_active: false });
 }
+
 function updatePolling(id) {
   return db('polls')
     .where({ id })
     .update({ polling_active: false, completed: false });
+}
+
+// returns the creator of the poll
+function findByPollId(pollId) {
+  return db('polls')
+    .select('user_id')
+    .where({ id: pollId })
+    .first();
 }
