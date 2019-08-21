@@ -14,7 +14,6 @@ router.get('/:id', async (req, res) => {
   try {
     // check if jwt roles match
     const authorized = await AuthService.withRole(id, req, res);
-    console.log('auth', authorized);
 
     // if authorized, meaning role on the JWT
     if (authorized) {

@@ -17,6 +17,14 @@ router.post('/:id', async (req, res) => {
   let { options } = req.body;
 
   try {
+    // check that options length is less than or equal to 10
+    if (options.length < 2 || options.length > 10) {
+      res
+        .status(400)
+        .json({ message: 'Poll option count must be between 2 and 10' });
+      return;
+    }
+
     // check if jwt roles match
     const authorized = await AuthService.withRole(id, req, res);
 
