@@ -2,18 +2,19 @@
 
 ## Endpoint table
 
-| HTTP METHOD | Endpoint                      | Description               | Needs AUTH-Z Header | Needs AUTH-N Role |
-| ----------- | ----------------------------- | ------------------------- | ------------------- | ----------------- |
-| POST        | `/api/auth/register`          | Creates a user            | FALSE               | FALSE             |
-| POST        | `/api/auth/login`             | Logs in a user            | FALSE               | FALSE             |
-| GET         | `/api/users/:id`              | Gets a user's info        | TRUE                | TRUE              |
-| DELETE      | `/users/:id`                  | Deletes a user            | TRUE                |                   |
-| POST        | `/polls/:id`                  | Creates a poll            | TRUE                |                   |
-| DELETE      | `/polls/:id`                  | Deletes a poll            | TRUE                |                   |
-| GET         | `/polls/:id`                  | Gets a poll               | TRUE                |                   |
-| POST        | `/polls/prevote/upvote/:id`   | Adds a vote to a pre poll | TRUE                |                   |
-| POST        | `/polls/prevote/downvote/:id` | Adds a vote to a pre poll | TRUE                |                   |
-| POST        | `/polls/vote/:id`             | Adds a vote to a poll     | TRUE                |                   |
+| HTTP METHOD | Endpoint             | Description        | Needs AUTH-Z Header | Needs AUTH-N Role |
+| ----------- | -------------------- | ------------------ | ------------------- | ----------------- |
+| POST        | `/api/auth/register` | Creates a user     | FALSE               | FALSE             |
+| POST        | `/api/auth/login`    | Logs in a user     | FALSE               | FALSE             |
+| GET         | `/api/users/:id`     | Gets a user's info | TRUE                | TRUE              |
+| DELETE      | `/users/:id`         | Deletes a user     | TRUE                | TRUE              |
+
+| POST | `/polls/:id` | Creates a poll | TRUE | |
+| DELETE | `/polls/:id` | Deletes a poll | TRUE | |
+| GET | `/polls/:id` | Gets a poll | TRUE | |
+| POST | `/polls/prevote/upvote/:id` | Adds a vote to a pre poll | TRUE | |
+| POST | `/polls/prevote/downvote/:id` | Adds a vote to a pre poll | TRUE | |
+| POST | `/polls/vote/:id` | Adds a vote to a poll | TRUE | |
 
 ## Endpoint Examples
 

@@ -8,6 +8,7 @@ module.exports = {
   updateUp
 };
 
+// gets option from db
 function findBy(filter) {
   return db('options')
     .select()
@@ -17,7 +18,7 @@ function findBy(filter) {
 
 function findByPollId(poll_id) {
   return db('options')
-    .select('id', 'poll_id', 'text', 'votes')
+    .select()
     .where('poll_id', poll_id);
 }
 

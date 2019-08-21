@@ -10,26 +10,29 @@ module.exports = {
   updatePolling
 };
 
+// finds poll without user id
 function findBy(filter) {
   return db('polls')
     .select(
       'id',
-      'question',
+      'text',
       'up_votes',
       'down_votes',
-      'polling_active',
-      'prepolling_active',
-      'completed',
+      'proposed_polling_status',
+      'polling_status ',
+      'poll_status ',
       'created_at'
     )
     .where(filter)
     .first();
 }
 
+// adds poll to db
 function add(poll) {
   return db('polls').insert(poll);
 }
 
+// removes poll from db
 function remove(filter) {
   return db('polls')
     .where(filter)

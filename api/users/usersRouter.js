@@ -6,14 +6,15 @@ const Users = require('./usersModel.js');
 // service imports
 const AuthService = require('./auth/authServices.js');
 
-// Gets a user's info
+// gets a user's info
 router.get('/:id', async (req, res) => {
-  // gets id from request body
+  // gets id from request params
   const { id } = req.params;
 
   try {
     // check if jwt roles match
-    const authorized = AuthService.withRole(id, req, res);
+    const authorized = await AuthService.withRole(id, req, res);
+    console.log('auth', authorized);
 
     // if authorized, meaning role on the JWT
     if (authorized) {
@@ -34,14 +35,14 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Deletes a user
+// deletes a user
 router.delete('/:id', async (req, res) => {
-  // gets id from request body
+  // gets id from request params
   const { id } = req.params;
 
   try {
     // check if jwt roles match
-    const authorized = AuthService.withRole(id, req, res);
+    const authorized = await AuthService.withRole(id, req, res);
 
     // if authorized, meaning role on the JWT
     if (authorized) {

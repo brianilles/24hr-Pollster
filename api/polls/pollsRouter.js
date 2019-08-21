@@ -1,51 +1,71 @@
-const moment = require('moment');
 const router = require('express').Router();
-const Users = require('../users/usersModel.js');
+const moment = require('moment');
+
+// model imports
 const Polls = require('./pollsModel.js');
 const Votes = require('./votesModel.js');
 const Options = require('./options/optionsModel.js');
 
-// Creates a poll
+// service imports
+const AuthService = require('../users/auth/authServices.js');
+
+// creates a poll
 router.post('/:id', async (req, res) => {
-  // check the authorization of the post creator
+  // gets id from request params
   const { id } = req.params;
-  let { question } = req.body;
+  let { text } = req.body;
   let { options } = req.body;
 
-  const authorized = withRole(id, req, res);
-  if (authorized) {
-    // add the id onto poll
-    poll = {
-      user_id: id,
-      question
-    };
+  try {
+    // check if jwt roles match
+    const authorized = await AuthService.withRole(id, req, res);
 
-    // create the poll
-    try {
+    // if authorized, meaning role on the JWT
+    if (authorized) {
+      // add the id onto poll
+      let poll = {
+        user_id: id,
+        text
+      };
       // add to polls table
       const added = await Polls.add(poll);
       const addedId = added[0];
-      let addedPoll = await Polls.findBy({ id: addedId });
+
+      // get added poll with id
+      let addedPoll = await Polls.findBy({
+        id: addedId
+      });
 
       // add to options table
       for (i in options) {
-        await Options.add({ poll_id: addedId, text: options[i] });
+        await Options.add({
+          poll_id: addedId,
+          text: options[i]
+        });
       }
+
+      // get all options added to db
       const addedOptions = await Options.findByPollId(addedId);
 
+      // add the options onto the addedPoll
       addedPoll.options = addedOptions;
+
+      // return Poll object with options
       res.status(201).json(addedPoll);
-    } catch (error) {
-      res.status(500).json({
-        message: 'An unknown error occured. Post could not be added.'
+    } else {
+      res.status(403).json({
+        message: 'No Access. Invalid token.'
       });
     }
-  } else {
-    res.status(403).json({ message: 'No Access. Invalid token.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'An unknown error occured.'
+    });
   }
 });
 
-// Gets a poll
+// gets a poll
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -63,7 +83,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Deletes a poll
+// deletes a poll
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   const { pollId } = req.body;
@@ -84,7 +104,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Adds an upvote to a pre poll
+// adds an upvote to a pre poll
 router.post('/prevote/upvote/:id', async (req, res) => {
   const { id } = req.params;
   const { pollId } = req.body;
@@ -128,7 +148,7 @@ router.post('/prevote/upvote/:id', async (req, res) => {
   }
 });
 
-// Has a day gone by since this poll was created?
+// has a day gone by since this poll was created?
 function isActiveDay(created_at) {
   let created = moment(created_at);
   let now = moment().utc();
@@ -146,7 +166,7 @@ function isActiveDay(created_at) {
   }
 }
 
-// Adds an downvote to a pre poll
+// adds an downvote to a pre poll
 router.post('/prevote/downvote/:id', async (req, res) => {
   const { id } = req.params;
   const { pollId } = req.body;
@@ -189,7 +209,7 @@ router.post('/prevote/downvote/:id', async (req, res) => {
   }
 });
 
-// Has a day gone by since this poll was created?
+// has a day gone by since this poll was created?
 function isActiveHour(created_at) {
   let created = moment(created_at);
   let now = moment();
@@ -205,7 +225,7 @@ function isActiveHour(created_at) {
   }
 }
 
-// Adds a vote to a poll
+// adds a vote to a poll
 router.post('/vote/:id', async (req, res) => {
   const { id } = req.params;
   const { pollId, optionId } = req.body;
@@ -259,18 +279,5 @@ router.post('/vote/:id', async (req, res) => {
     res.status(403).json({ message: 'No Access. Invalid token.' });
   }
 });
-
-// Is authorized?
-function withRole(id, req, res) {
-  if (
-    req.decodedJwt &&
-    req.decodedJwt.roles &&
-    req.decodedJwt.roles.includes(id)
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 module.exports = router;

@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken');
 const secret = require('./secret.js').jwtSecret;
 
+// models import
+const Users = require('../usersModel.js');
+
 module.exports = {
   generateToken,
   withRole
@@ -19,14 +22,21 @@ function generateToken(user) {
 }
 
 // check if jwt roles match
-function withRole(id, req, res) {
-  if (
-    req.decodedJwt &&
-    req.decodedJwt.roles &&
-    req.decodedJwt.roles.includes(id)
-  ) {
-    return true;
-  } else {
+async function withRole(id, req, res) {
+  // get user from db
+  try {
+    const user = await Users.findBy({ id });
+    if (
+      user &&
+      req.decodedJwt &&
+      req.decodedJwt.roles &&
+      req.decodedJwt.roles.includes(id)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
     return false;
   }
 }
