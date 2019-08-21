@@ -6,7 +6,7 @@
 | ----------- | ----------------------------- | ------------------------- | ------------------- | ----------------- |
 | POST        | `/api/auth/register`          | Creates a user            | FALSE               | FALSE             |
 | POST        | `/api/auth/login`             | Logs in a user            | FALSE               | FALSE             |
-| GET         | `/users/:id`                  | Gets a user's info        | TRUE                |                   |
+| GET         | `/api/users/:id`              | Gets a user's info        | TRUE                | TRUE              |
 | DELETE      | `/users/:id`                  | Deletes a user            | TRUE                |                   |
 | POST        | `/polls/:id`                  | Creates a poll            | TRUE                |                   |
 | DELETE      | `/polls/:id`                  | Deletes a poll            | TRUE                |                   |
@@ -78,13 +78,13 @@ Response:
 
 ```json
 {
-  "id": 8,
+  "id": 3,
   "full_name": "Test Name",
-  "email": "example@gmail.com",
-  "phone_number": "29012901828",
-  "verified": 0,
+  "email": "exampd3le@gmail.com",
+  "phone_number": "2900d12901828",
+  "verified_status": "unverified",
   "score": "4.00",
-  "created_at": "2019-08-20 22:18:47"
+  "created_at": "2019-08-21 01:38:37"
 }
 ```
 

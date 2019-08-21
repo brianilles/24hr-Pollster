@@ -2,7 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 
-// import routes
+// route imports
 const authRouter = require('./users/auth/authRouter.js');
 const usersRouter = require('./users/usersRouter.js');
 const pollsRouter = require('./polls/pollsRouter.js');
@@ -26,10 +26,10 @@ server.get('/', (req, res) => {
 // auth routes
 server.use('/api/auth', authRouter);
 
-// user routes
+// user routes, restricted
 server.use('/api/users', restricted, usersRouter);
 
-// polls routes
+// polls routes, restricted
 server.use('/api/polls', restricted, pollsRouter);
 
 module.exports = server;

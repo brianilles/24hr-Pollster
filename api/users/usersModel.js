@@ -27,6 +27,7 @@ function findBy(filter) {
     .first();
 }
 
+// finds and returns user id and password
 function findByMin(filter) {
   return db('users')
     .select('id', 'password')
@@ -34,6 +35,7 @@ function findByMin(filter) {
     .first();
 }
 
+// remove user from db
 function remove(filter) {
   return db('users')
     .where(filter)
