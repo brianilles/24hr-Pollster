@@ -81,6 +81,13 @@ router.get('/:id', async (req, res) => {
 
   try {
     // gets poll from db
+    let pollBefore = await Polls.findBy({
+      id
+    });
+
+    // time check
+    await VotesService.getProposedPollStatus(pollBefore);
+
     let poll = await Polls.findBy({
       id
     });
@@ -103,7 +110,7 @@ router.get('/:id', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: 'An error occurred getting the user.'
+      message: 'An error occurred getting the poll.'
     });
   }
 });
@@ -291,56 +298,87 @@ router.post('/proposedvote/downvote/:id', async (req, res) => {
 
 // adds a vote to a poll
 router.post('/vote/:id', async (req, res) => {
+  // gets id from request params
   const { id } = req.params;
   const { pollId, optionId } = req.body;
 
-  // 1. check that the poll exists
-  // 2. increment the value of the optionId
+  try {
+    // check if jwt roles match
+    const authorized = await AuthService.withRole(id, req, res);
 
-  const authorized = withRole(id, req, res);
-  if (authorized) {
-    const hasVotedForPoll = await Votes.pollFindBy({
-      user_id: id,
-      poll_id: pollId
-    });
-    if (hasVotedForPoll) {
-      res
-        .status(405)
-        .json({ message: 'User has already voted for this poll.' });
-    } else {
-      const poll = await Polls.findBy({ id: pollId });
-      const active = isActiveHour(poll.created_at);
-      console.log(active);
-      if (!active) {
-        await Polls.updatePolling(pollId);
-        res.status(400).json({ message: 'Polling is no longer active.' });
-      } else {
-        const option = await Options.findBy({ id: optionId });
+    if (authorized) {
+      // get the poll
+      const poll = await Polls.findBy({
+        id: pollId
+      });
 
-        // check that the option exists on the poll
-        if (option && option.poll_id === pollId) {
-          // add votes to option
-          const upOption = option.votes + 1;
-          const updatedOption = await Options.updateUp({
-            id: optionId,
-            votes: upOption
+      if (poll) {
+        // check that this poll is still active
+        const pollStatus = await VotesService.getPollStatus(poll);
+
+        // if true meaning the poll is still active
+        if (pollStatus) {
+          // check if the user has voted for this poll yet, no double votes allowed
+          const hasVoted = await Votes.pollFindBy({
+            user_id: id,
+            poll_id: pollId
           });
-          if (updatedOption) {
-            await Votes.addVotes({
-              user_id: id,
-              poll_id: pollId
+
+          // if user has already voted
+          if (hasVoted) {
+            res.status(405).json({
+              message: 'User has already voted for this poll.'
             });
-            res.status(200).json(updatedOption);
           } else {
-            res.status(404).json({ message: 'Option not found.' });
+            // get the option
+            const option = await Options.findBy({
+              id: optionId
+            });
+
+            // check that the option exists on the poll
+            if (option && option.poll_id === pollId) {
+              // add vote to option
+              const upOption = option.votes + 1;
+
+              // get the updated option
+              const updatedOption = await Options.updateUp({
+                id: optionId,
+                votes: upOption
+              });
+
+              // if successfull
+              if (updatedOption) {
+                await Votes.addVotes({
+                  user_id: id,
+                  poll_id: pollId
+                });
+                res.status(200).json(updatedOption);
+              } else {
+                res.status(404).json({
+                  message: 'Option not found.'
+                });
+              }
+            } else {
+              res.status(404).json({
+                message: 'Poll/Option not found.'
+              });
+            }
           }
         } else {
-          res.status(404).json({ message: 'Poll/Option not found.' });
+          res.status(400).json({
+            message: 'Polling has ended.'
+          });
         }
+      } else {
+        res.status(404).json({
+          message: 'Poll not found.'
+        });
       }
+    } else {
+      res.status(403).json({ message: 'No Access. Invalid token.' });
     }
-  } else {
-    res.status(403).json({ message: 'No Access. Invalid token.' });
+  } catch (error) {
+    res.status(500).json({ message: 'An unknown error occured.' });
   }
 });
 

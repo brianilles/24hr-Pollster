@@ -9,7 +9,8 @@ module.exports = {
   update,
   updatePollPassed,
   updatePollFailed,
-  findByPollId
+  findByPollId,
+  updatePollComplete
 };
 
 // finds poll without user id
@@ -63,7 +64,11 @@ function update(id) {
 function updatePollPassed(id) {
   return db('polls')
     .where({ id })
-    .update({ proposed_polling_status: 'complete', polling_status: 'active' });
+    .update({
+      proposed_polling_status: 'complete',
+      polling_status: 'active',
+      poll_status: 'success'
+    });
 }
 
 function updatePollFailed(id) {
@@ -71,7 +76,8 @@ function updatePollFailed(id) {
     .where({ id })
     .update({
       proposed_polling_status: 'complete',
-      polling_status: 'complete'
+      polling_status: 'complete',
+      poll_status: 'failed'
     });
 }
 
@@ -81,4 +87,10 @@ function findByPollId(pollId) {
     .select('user_id')
     .where({ id: pollId })
     .first();
+}
+
+function updatePollComplete(id) {
+  return db('polls')
+    .where({ id })
+    .update({ polling_status: 'complete', poll_status: 'complete' });
 }
