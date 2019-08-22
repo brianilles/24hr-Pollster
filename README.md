@@ -1,5 +1,7 @@
 # VP_BE_MK_1
 
-Backend for VP MK1
+Backend for VP_MK1
 
-Base URL: `example.com`
+VP_MK1 is a polling app prototype
+
+API information: [here](API.md)
