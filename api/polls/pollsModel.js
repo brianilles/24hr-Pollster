@@ -10,7 +10,9 @@ module.exports = {
   updatePollPassed,
   updatePollFailed,
   findByPollId,
-  updatePollComplete
+  updatePollComplete,
+  findByAll,
+  findByAllChunk
 };
 
 // finds poll without user id
@@ -93,4 +95,35 @@ function updatePollComplete(id) {
   return db('polls')
     .where({ id })
     .update({ polling_status: 'complete' });
+}
+
+function findByAll(filter) {
+  return db('polls')
+    .select(
+      'id',
+      'text',
+      'up_votes',
+      'down_votes',
+      'proposed_polling_status',
+      'polling_status ',
+      'poll_status ',
+      'created_at'
+    )
+    .where(filter);
+}
+
+// get a chunk of the proposed polls
+function findByAllChunk(filter) {
+  return db('polls')
+    .select(
+      'id',
+      'text',
+      'up_votes',
+      'down_votes',
+      'proposed_polling_status',
+      'polling_status ',
+      'poll_status ',
+      'created_at'
+    )
+    .where(filter);
 }
