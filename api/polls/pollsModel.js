@@ -92,5 +92,5 @@ function findByPollId(pollId) {
 function updatePollComplete(id) {
   return db('polls')
     .where({ id })
-    .update({ polling_status: 'complete', poll_status: 'complete' });
+    .update({ polling_status: 'complete' });
 }

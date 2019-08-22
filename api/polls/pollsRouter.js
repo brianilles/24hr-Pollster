@@ -85,15 +85,15 @@ router.get('/:id', async (req, res) => {
       id
     });
 
-    // time check
-    await VotesService.getProposedPollStatus(pollBefore);
-
-    let poll = await Polls.findBy({
-      id
-    });
-
     // if poll exists in db
-    if (poll) {
+    if (pollBefore) {
+      // time check
+
+      await VotesService.getPollStatus(pollBefore);
+
+      let poll = await Polls.findBy({
+        id
+      });
       // get the options in the db for that post
       const options = await Options.findByPollId(id);
 
@@ -365,9 +365,20 @@ router.post('/vote/:id', async (req, res) => {
             }
           }
         } else {
-          res.status(400).json({
-            message: 'Polling has ended.'
+          const pollNow = await Polls.findBy({
+            id: pollId
           });
+          if (pollNow.polling_status === 'complete') {
+            res.status(400).json({
+              message: 'Polling has ended.'
+            });
+            return;
+          } else {
+            res.status(400).json({
+              message: 'Poll has not been approved yet.'
+            });
+            return;
+          }
         }
       } else {
         res.status(404).json({

@@ -11,8 +11,8 @@ exports.up = function(knex) {
     polls.integer('up_votes').defaultTo(0);
     polls.integer('down_votes').defaultTo(0);
     polls.string('proposed_polling_status').defaultTo('active');
-    polls.string('polling_status').defaultTo('inactive');
     polls.string('poll_status').defaultTo('inactive');
+    polls.string('polling_status').defaultTo('inactive');
     polls
       .timestamp('created_at', {
         useTz: false

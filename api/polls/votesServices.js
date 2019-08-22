@@ -48,7 +48,7 @@ async function getPollStatus(poll) {
       // check to see if the up votes are greater than or equal to downvotes
       await Polls.updatePollComplete(poll.id);
       return false;
-    } else {
+    } else if (poll.polling_status === 'active') {
       return true;
     }
   } catch (error) {
