@@ -4,6 +4,7 @@
 
 | HTTP METHOD | Endpoint                               | Description                        | Needs AUTH-Z Header | Needs AUTH-N Role |
 | ----------- | -------------------------------------- | ---------------------------------- | ------------------- | ----------------- |
+| POST        | `/`                                    | Test                               | FALSE               | FALSE             |
 | POST        | `/api/auth/register`                   | Creates a user                     | FALSE               | FALSE             |
 | POST        | `/api/auth/login`                      | Logs in a user                     | FALSE               | FALSE             |
 | GET         | `/api/users/:id`                       | Gets a user's info                 | TRUE                | TRUE              |
@@ -14,6 +15,20 @@
 | POST        | `/api/polls/proposedvote/upvote/:id`   | Adds an upvote to a proposed poll  | TRUE                | TRUE              |
 | POST        | `/api/polls/proposedvote/downvote/:id` | Adds a downvote to a proposed poll | TRUE                | TRUE              |
 | POST        | `/api/polls/vote/:id`                  | Adds a vote to a poll              | TRUE                | TRUE              |
+
+TODO
+
+// feeds
+| GET | `/api/feeds/completedpolls/:id` | Gets feed for completed polls| TRUE | TRUE |
+| GET | `/api/feeds/activepolls/:id` | Gets feed for active polls| TRUE | TRUE |
+| GET | `/api/feeds/proposedpolls/:id` | Gets feed for proposed polls | TRUE | TRUE |
+
+// change register for 24hours or something and add twillo phone verify for account creation and forgot passsord
+| POST | `/api/auth/forgotpassword/:id` | -- | FALSE | FALSE |
+| POST | `/api/auth/verifyaccount/:id` | -- | TRUE | TRUE |
+
+// GET Gets polls for profile page? MAYBE
+| POST | `/api/users/polls/:id` | Gets users polls | TRUE | TRUE |
 
 ## Endpoint Examples
 
