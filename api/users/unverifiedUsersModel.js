@@ -8,18 +8,18 @@ module.exports = {
 };
 
 function add(user) {
-  return db('users').insert(user);
+  return db('unverified_users').insert(user);
 }
 
 // finds and returns a user's info, (password omitted)
 function findBy(filter) {
-  return db('users')
+  return db('unverified_users')
     .select(
       'id',
       'full_name',
       'email',
       'phone_number',
-      'total_votes',
+      'verified_status',
       'created_at'
     )
     .where(filter)
@@ -28,7 +28,7 @@ function findBy(filter) {
 
 // finds and returns user id and password
 function findByMin(filter) {
-  return db('users')
+  return db('unverified_users')
     .select('id', 'password')
     .where(filter)
     .first();
@@ -36,7 +36,7 @@ function findByMin(filter) {
 
 // remove user from db
 function remove(filter) {
-  return db('users')
+  return db('unverified_users')
     .where(filter)
     .del();
 }

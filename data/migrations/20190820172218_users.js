@@ -11,11 +11,7 @@ exports.up = function(knex) {
       .notNullable()
       .unique();
     users.string('password', 128).notNullable();
-    users
-      .string('verified_status')
-      .defaultTo('unverified')
-      .notNullable();
-    users.integer('votes').defaultTo(0);
+    users.integer('total_votes').defaultTo(0);
     //     users.timestamp('created_at').defaultTo(knex.fn.now());
     users
       .timestamp('created_at', {
