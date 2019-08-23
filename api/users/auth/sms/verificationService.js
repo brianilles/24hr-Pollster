@@ -9,7 +9,7 @@ module.exports = {
   sendCode,
   verificationCheck
 };
-
+/// TODO trycatch
 // sends code to end user
 async function sendCode(phonenumber) {
   const verification = await client.verify

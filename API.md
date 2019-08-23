@@ -5,6 +5,7 @@
 | HTTP METHOD | Endpoint                               | Description                        | Needs AUTH-Z Header | Needs AUTH-N Role |
 | ----------- | -------------------------------------- | ---------------------------------- | ------------------- | ----------------- |
 | POST        | `/`                                    | Test                               | FALSE               | FALSE             |
+| POST        | `api/auth/verify`                      | Sends a code via SMS               | FALSE               | FALSE             |
 | POST        | `/api/auth/register`                   | Creates a user                     | FALSE               | FALSE             |
 | POST        | `/api/auth/login`                      | Logs in a user                     | FALSE               | FALSE             |
 | GET         | `/api/users/:id`                       | Gets a user's info                 | TRUE                | TRUE              |
@@ -31,16 +32,16 @@ TODO
 
 ---
 
-#### POST `/api/auth/register`
+#### POST `/api/auth/verify`
 
 Send in request body:
 
 ```json
 {
-  "full_name": "Test Name",
-  "email": "exam4p3d3ass3ddfle@gmail.com",
-  "phone_number": "2940s403d5d12901828",
-  "password": "passwordjfklsd;a"
+  "full_name": "John Doe",
+  "email": "johndoe@gmail.com",
+  "phone_number": "+insertphonenumber",
+  "password": "asdfkj#DWnaskduinr##"
 }
 ```
 
@@ -48,13 +49,44 @@ Response:
 
 ```json
 {
-  "id": 13,
-  "full_name": "Test Name",
-  "email": "exam4p3d3ass3ddfle@gmail.com",
-  "phone_number": "2940s403d5d12901828",
+  "id": 17,
+  "full_name": "John Dose2",
+  "email": "johndoes2@gmail.com",
+  "phone_number": "+18052916717",
   "verified_status": "unverified",
-  "score": "4.00",
-  "created_at": "2019-08-21 05:02:52"
+  "created_at": "2019-08-23 06:18:46",
+  "message_status": "sent"
+}
+```
+
+---
+
+---
+
+#### POST `/api/auth/register`
+
+Send in request body:
+
+```json
+{
+  "full_name": "John Doe2",
+  "email": "johndoe2@gmail.com",
+  "phone_number": "+insertphonenumber",
+  "password": "passwordjfklsd;a",
+  "code": 877514
+}
+```
+
+Response:
+
+```json
+{
+  "id": 2,
+  "full_name": "John Doe2",
+  "email": "johndoe2@gmail.com",
+  "phone_number": "+18052916717",
+  "total_votes": 0,
+  "created_at": "2019-08-23 05:24:03"
 }
 ```
 

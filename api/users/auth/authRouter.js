@@ -10,7 +10,7 @@ const AuthService = require('./authServices.js');
 const VerificationService = require('./sms/verificationService.js');
 
 // create an unverified user
-router.post('/verify/start', async (req, res) => {
+router.post('/verify', async (req, res) => {
   // user info passed in request body
   let user = req.body;
   const { full_name, email, phone_number, password } = user;
