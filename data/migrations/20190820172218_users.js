@@ -12,7 +12,6 @@ exports.up = function(knex) {
       .unique();
     users.string('password', 128).notNullable();
     users.integer('total_votes').defaultTo(0);
-    //     users.timestamp('created_at').defaultTo(knex.fn.now());
     users
       .timestamp('created_at', {
         useTz: false

@@ -8,22 +8,32 @@ module.exports = {
   sendCode,
   verificationCheck
 };
-/// TODO trycatch
+
 // sends code to end user
 async function sendCode(phonenumber) {
-  const verification = await client.verify
-    .services(serviceSid)
-    .verifications.create({ to: phonenumber, channel: 'sms' });
-  return verification.status;
+  try {
+    const verification = await client.verify
+      .services(serviceSid)
+      .verifications.create({ to: phonenumber, channel: 'sms' });
+    return verification.status;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 // verifies codes match
 async function verificationCheck(verifyData) {
-  const verificationCheck = await client.verify
-    .services(serviceSid)
-    .verificationChecks.create({
-      to: verifyData.phonenumber,
-      code: verifyData.code
-    });
-  return verificationCheck.status;
+  try {
+    const verificationCheck = await client.verify
+      .services(serviceSid)
+      .verificationChecks.create({
+        to: verifyData.phonenumber,
+        code: verifyData.code
+      });
+    return verificationCheck.status;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }

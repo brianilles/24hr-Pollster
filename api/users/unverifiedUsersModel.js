@@ -14,14 +14,7 @@ function add(user) {
 // finds and returns a user's info, (password omitted)
 function findBy(filter) {
   return db('unverified_users')
-    .select(
-      'id',
-      'full_name',
-      'email',
-      'phone_number',
-      'verified_status',
-      'created_at'
-    )
+    .select('id', 'full_name', 'email', 'phone_number', 'created_at')
     .where(filter)
     .first();
 }

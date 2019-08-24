@@ -46,8 +46,8 @@ router.post('/verify', async (req, res) => {
 
       // if user is already in unverified db
       if (phoneNumberCheck) {
-        res.status(405).json({ message: 'Phone number already present.' });
-        return;
+        // delete the old info, add the new info
+        await UnverifiedUsers.remove({ id: phoneNumberCheck.id });
       }
 
       // create hash of password to store in db
@@ -178,6 +178,14 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   // user info passed in request body
   const { email, password } = req.body;
+
+  // incorrect usage
+  if (!email || !password) {
+    res.status(422).json({
+      message: 'Must provide email and password.'
+    });
+    return;
+  }
 
   try {
     // checks that the user exists, gets the id and password from DB
