@@ -5,7 +5,7 @@
 | HTTP METHOD | Endpoint                               | Description                        | Needs AUTH-Z Header | Needs AUTH-N Role |
 | ----------- | -------------------------------------- | ---------------------------------- | ------------------- | ----------------- |
 | POST        | `/`                                    | Test                               | FALSE               | FALSE             |
-| POST        | `api/auth/verify`                      | Sends a code via SMS               | FALSE               | FALSE             |
+| POST        | `/api/auth/verify`                     | Sends a code via SMS               | FALSE               | FALSE             |
 | POST        | `/api/auth/register`                   | Creates a user                     | FALSE               | FALSE             |
 | POST        | `/api/auth/login`                      | Logs in a user                     | FALSE               | FALSE             |
 | GET         | `/api/users/:id`                       | Gets a user's info                 | TRUE                | TRUE              |
