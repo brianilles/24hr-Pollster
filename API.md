@@ -21,9 +21,7 @@
 | GET         | `/api/feeds/completedpolls/:id/:chunk` | Gets feed for completed polls      | TRUE                | TRUE              |
 
 TODO
-// change register for 24hours or something and add twillo phone verify for account creation and forgot passsord
 | POST | `/api/auth/forgotpassword/:id` | -- | FALSE | FALSE |
-| POST | `/api/auth/verifyaccount/:id` | -- | TRUE | TRUE |
 
 // GET Gets polls for profile page? MAYBE
 | POST | `/api/users/polls/:id` | Gets users polls | TRUE | TRUE |
@@ -52,8 +50,7 @@ Response:
   "id": 17,
   "full_name": "John Dose2",
   "email": "johndoes2@gmail.com",
-  "phone_number": "+18052916717",
-  "verified_status": "unverified",
+  "phone_number": "+1insertphonenumber",
   "created_at": "2019-08-23 06:18:46",
   "message_status": "sent"
 }
@@ -71,7 +68,7 @@ Send in request body:
 {
   "full_name": "John Doe2",
   "email": "johndoe2@gmail.com",
-  "phone_number": "+insertphonenumber",
+  "phone_number": "+1insertphonenumber",
   "password": "passwordjfklsd;a",
   "code": 877514
 }
