@@ -81,7 +81,7 @@ Response:
   "id": 2,
   "full_name": "John Doe2",
   "email": "johndoe2@gmail.com",
-  "phone_number": "+18052916717",
+  "phone_number": "+1insertphonenumber",
   "total_votes": 0,
   "created_at": "2019-08-23 05:24:03"
 }
@@ -122,7 +122,7 @@ Response:
   "id": 10,
   "full_name": "Test Name",
   "email": "exam4p3d3asdfle@gmail.com",
-  "phone_number": "2940405d12901828",
+  "phone_number": "+1insertphonenumber",
   "verified_status": "unverified",
   "score": "4.00",
   "created_at": "2019-08-21 04:15:42"
