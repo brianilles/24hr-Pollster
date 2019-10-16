@@ -1,4 +1,4 @@
-# 24hrPoll
+# 24hr Pollster
 
 Features include but are not limited to:
 
